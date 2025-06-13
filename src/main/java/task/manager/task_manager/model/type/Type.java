@@ -1,16 +1,21 @@
 package task.manager.task_manager.model.type;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import task.manager.task_manager.model.project.Project;
 
 import java.util.List;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "type")
-@Data
 public class Type {
 
     @Id
@@ -24,6 +29,7 @@ public class Type {
     private String color;
 
     @OneToMany(mappedBy = "type")
+    @JsonIgnore
     private List<Project> projects;
 
 }

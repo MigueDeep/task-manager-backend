@@ -1,5 +1,6 @@
 package task.manager.task_manager.controller.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import jakarta.validation.constraints.*;
 import task.manager.task_manager.model.user.User;
@@ -10,15 +11,18 @@ import task.manager.task_manager.model.user.User;
 @Builder
 public class UserDto {
 
+    @Schema(hidden = true)
     private String id;
 
     @NotBlank(message = "El nombre es requerido")
-    @Pattern(regexp = "[a-zA-Z ]+$", message = "El nombre no es valido")
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$", message = "El nombre no es válido")
     @Size(min = 3, max = 150, message = "El nombre debe tener entre 3 y 150 caracteres")
+    @Schema(example = "Miguel Delgado")
     private String fullName;
 
     @NotBlank(message = "El correo es requerido")
     @Email(message = "El correo no es válido")
+    @Schema(example = "example@email.com")
     private String email;
 
     @NotBlank(message = "La contraseña es requerida")

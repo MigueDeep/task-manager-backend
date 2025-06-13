@@ -1,12 +1,16 @@
 package task.manager.task_manager.model.project;
 
 import jakarta.persistence.*;
+import lombok.*;
 import task.manager.task_manager.model.Task;
 import task.manager.task_manager.model.type.Type;
 
 import java.util.List;
 import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "project")
 public class Project {

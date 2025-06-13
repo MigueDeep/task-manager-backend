@@ -20,9 +20,9 @@ public class TypeService extends CustomDtoValidator<TypeDto> {
     public CustomApiResponse<List<Type>> getAllTypes() {
         List<Type> types = typeRepository.findAll();
         if (types.isEmpty()) {
-            return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "No types found");
+            return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "No se encontraron tipos de proyecto");
         }
-        return new CustomApiResponse<>(types, false, HttpStatus.FOUND, "Types found");
+        return new CustomApiResponse<>(types, false, HttpStatus.FOUND, "Tipos de proyecto encontrados exitosamente");
     }
 
     public CustomApiResponse<Type> createType(TypeDto typeDto){
@@ -36,7 +36,7 @@ public class TypeService extends CustomDtoValidator<TypeDto> {
         }
         Type type = new Type();
         type.setName(typeDto.getName());
-        type.setColor(type.getColor());
+        type.setColor(typeDto.getColor());
         typeRepository.save(type);
         return new CustomApiResponse<>(type, false, HttpStatus.CREATED, "Tipo de proyecto creado!");
     }
