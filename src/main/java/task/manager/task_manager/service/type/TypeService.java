@@ -22,7 +22,7 @@ public class TypeService extends CustomDtoValidator<TypeDto> {
         if (types.isEmpty()) {
             return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "No se encontraron tipos de proyecto");
         }
-        return new CustomApiResponse<>(types, false, HttpStatus.FOUND, "Tipos de proyecto encontrados exitosamente");
+        return new CustomApiResponse<>(types, false, HttpStatus.OK, "Tipos de proyecto encontrados exitosamente");
     }
 
     public CustomApiResponse<Type> createType(TypeDto typeDto){
