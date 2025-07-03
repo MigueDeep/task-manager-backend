@@ -76,7 +76,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/getById")
-    public ResponseEntity<CustomApiResponse<Project>> getProjectById(@RequestBody UUID projectId) {
+    public ResponseEntity<CustomApiResponse<Project>> getProjectById(@RequestParam UUID projectId) {
         CustomApiResponse<Project> response = new CustomApiResponse<>();
         try{
             response = projectService.getProjectById(projectId);
