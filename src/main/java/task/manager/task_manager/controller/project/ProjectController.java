@@ -100,7 +100,7 @@ public class ProjectController {
     public ResponseEntity<CustomApiResponse<Project>> updateProject(@RequestBody ProjectDto projectDto) {
         CustomApiResponse<Project> response = new CustomApiResponse<>();
         try{
-            projectService.updateProject(projectDto.getId(), projectDto);
+            response = projectService.updateProject(projectDto.getId(), projectDto);
         }catch (Exception e){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage(e.getMessage());
