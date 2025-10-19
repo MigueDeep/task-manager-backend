@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import task.manager.task_manager.config.CustomApiResponse;
 import task.manager.task_manager.model.project.Project;
 import task.manager.task_manager.service.project.ProjectService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,10 +57,15 @@ public class ProjectController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/getAll")
-    public ResponseEntity<CustomApiResponse<List<Project>>> getAllProjects() {
+    public ResponseEntity<CustomApiResponse<List<Project>>> getAllProjects(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
         CustomApiResponse<List<Project>> response = new CustomApiResponse<>();
         try{
-            response = projectService.getAllProjects();
+            response = projectService.getAllProjects(name, status, startDate, endDate);
         }catch (Exception e){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage(e.getMessage());
