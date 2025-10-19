@@ -29,5 +29,4 @@ public class User {
     @Column(name = "password", length = 150, nullable = false)
     private String password;
 
-
 }
