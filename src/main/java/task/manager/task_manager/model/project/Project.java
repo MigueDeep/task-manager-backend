@@ -1,8 +1,10 @@
 package task.manager.task_manager.model.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import task.manager.task_manager.model.Task;
+import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.type.Type;
 
 import java.time.LocalDate;
@@ -40,5 +42,6 @@ public class Project {
     private Type type;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"project"})
     private List<Task> tasks;
 }

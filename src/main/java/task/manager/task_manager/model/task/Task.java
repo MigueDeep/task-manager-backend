@@ -1,17 +1,25 @@
-package task.manager.task_manager.model;
+package task.manager.task_manager.model.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import task.manager.task_manager.model.project.Project;
-import task.manager.task_manager.model.tag.Tag;
 
 import java.util.Set;
+import java.util.UUID;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "task")
 public class Task {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(name = "name", length = 150, nullable = false )
     private String name;
@@ -19,8 +27,11 @@ public class Task {
     @Column(name = "description", length = 250, nullable = false)
     private String description;
 
-    @Column(name = "comments", length = 250, nullable = false)
-    private String comments;
+    @Column(name = "comment", length = 250, nullable = false)
+    private String comment;
+
+    @Column(name = "status", length = 15, nullable = false)
+    private String status;
 
     @Column(name = "start_date", nullable = false)
     private String startDate;
@@ -30,14 +41,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "id_project", referencedColumnName = "id")
+    @JsonIgnoreProperties({"tasks", "type"})
     private Project project;
-
-    @ManyToMany
-    @JoinTable(
-            name = "task_tags",
-            joinColumns = @JoinColumn(name = "id_task"),
-            inverseJoinColumns = @JoinColumn(name = "id_tag")
-    )
-    private Set<Tag> tags;
 
 }
