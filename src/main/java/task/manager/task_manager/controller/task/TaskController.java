@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import task.manager.task_manager.config.CustomApiResponse;
 import task.manager.task_manager.model.task.Task;
+import task.manager.task_manager.model.task.TaskStatus;
 import task.manager.task_manager.service.task.TaskService;
 
 import java.util.List;
@@ -144,7 +145,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PutMapping("/updateStatus")
-    public ResponseEntity<CustomApiResponse<Task>> updateStatusTask(@RequestParam UUID id, @RequestParam String status) {
+    public ResponseEntity<CustomApiResponse<Task>> updateStatusTask(@RequestParam UUID id, @RequestParam TaskStatus status) {
         CustomApiResponse<Task> response = new CustomApiResponse<>();
         try{
             response = service.updateStatusTask(id, status);

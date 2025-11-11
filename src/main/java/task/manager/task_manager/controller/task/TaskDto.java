@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import task.manager.task_manager.model.task.Task;
+import task.manager.task_manager.model.task.TaskStatus;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -29,9 +30,8 @@ public class TaskDto {
     @Length(max = 250, message = "El comentario no debe exceder los 250 caracteres")
     private String comment;
 
-    @NotBlank(message = "El estado es requerido")
-    @Length(max = 15, message = "El estado no debe exceder los 15 caracteres")
-    private String status;
+    @NotNull(message = "El estado es requerido")
+    private TaskStatus status;
 
     @NotNull(message = "La fecha de inicio es requerida")
     @JsonFormat(pattern = "yyyy-MM-dd")

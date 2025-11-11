@@ -31,7 +31,8 @@ public class Task {
     private String comment;
 
     @Column(name = "status", length = 15, nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 
     @Column(name = "start_date", nullable = false)
     private String startDate;

@@ -10,6 +10,7 @@ import task.manager.task_manager.model.project.Project;
 import task.manager.task_manager.model.project.ProjectRepository;
 import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.task.TaskRepository;
+import task.manager.task_manager.model.task.TaskStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -55,8 +56,8 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
     }
 
     public CustomApiResponse<List<Task>> getTaskByProjectId(UUID id) {
-        List<Task> tasks = taskRepository.findByProjectId(id.toString());
-        if (!tasks.isEmpty()) {
+        List<Task> tasks = taskRepository.findByProjectId(id);
+        if (tasks.isEmpty()) {
             return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "No se encontraron tareas para el proyecto dado");
         }
         return new CustomApiResponse<>(tasks, false, HttpStatus.OK, "Tareas obtenidas exitosamente");
@@ -99,7 +100,7 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
         return new CustomApiResponse<>(existingTask, false, HttpStatus.OK, "Tarea actualizada exitosamente");
     }
 
-    public CustomApiResponse<Task> updateStatusTask(UUID id, String status){
+    public CustomApiResponse<Task> updateStatusTask(UUID id, TaskStatus status){
         Task existingTask = taskRepository.findById(id).orElse(null);
         if (existingTask == null) {
             return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "Tarea no encontrada");
