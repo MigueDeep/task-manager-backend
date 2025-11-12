@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import task.manager.task_manager.model.project.Project;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -30,8 +29,8 @@ public class Task {
     @Column(name = "comment", length = 250, nullable = false)
     private String comment;
 
-    @Column(name = "status", length = 15, nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 15, nullable = false)
     private TaskStatus status;
 
     @Column(name = "start_date", nullable = false)

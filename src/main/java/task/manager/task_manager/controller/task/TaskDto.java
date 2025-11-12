@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import task.manager.task_manager.config.EnumValidator;
 import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.task.TaskStatus;
 
@@ -31,7 +32,8 @@ public class TaskDto {
     private String comment;
 
     @NotNull(message = "El estado es requerido")
-    private TaskStatus status;
+    @EnumValidator(enumClass = TaskStatus.class, message = "El estado debe ser un valor válido para TaskStatus")
+    private String status;
 
     @NotNull(message = "La fecha de inicio es requerida")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -49,7 +51,7 @@ public class TaskDto {
         task.setName(this.name);
         task.setDescription(this.description);
         task.setComment(this.comment);
-        task.setStatus(this.status);
+        task.setStatus(TaskStatus.valueOf(this.status));
         task.setStartDate(this.startDate.toString());
         task.setEndDate(this.endDate.toString());
         return task;

@@ -92,7 +92,7 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
         existingTask.setName(taskDto.getName());
         existingTask.setDescription(taskDto.getDescription());
         existingTask.setComment(taskDto.getComment());
-        existingTask.setStatus(taskDto.getStatus());
+        existingTask.setStatus(TaskStatus.valueOf(taskDto.getStatus()));
         existingTask.setStartDate(taskDto.getStartDate().toString());
         existingTask.setEndDate(taskDto.getEndDate().toString());
         existingTask.setProject(existingProject);
