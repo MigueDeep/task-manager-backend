@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import task.manager.task_manager.model.project.Project;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -34,10 +35,10 @@ public class Task {
     private TaskStatus status;
 
     @Column(name = "start_date", nullable = false)
-    private String startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private String endDate;
+    private LocalDate endDate;
 
     @ManyToOne
     @JoinColumn(name = "id_project", referencedColumnName = "id")

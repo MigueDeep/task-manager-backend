@@ -1,6 +1,7 @@
 package task.manager.task_manager.service.task;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import task.manager.task_manager.config.CustomApiResponse;
@@ -10,8 +11,11 @@ import task.manager.task_manager.model.project.Project;
 import task.manager.task_manager.model.project.ProjectRepository;
 import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.task.TaskRepository;
+import task.manager.task_manager.model.task.TaskSpecification;
 import task.manager.task_manager.model.task.TaskStatus;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,10 +26,16 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
 
-    public CustomApiResponse<List<Task>> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
+    public CustomApiResponse<List<Task>> getAllTasks(String name, TaskStatus status, LocalDate startDate, LocalDate endDate, UUID projectId) {
+        Specification<Task> specification = Specification
+                .where(TaskSpecification.hasName(name))
+                .and(TaskSpecification.hasStatus(status))
+                .and(TaskSpecification.hasStartDate(startDate))
+                .and(TaskSpecification.hasEndDate(endDate))
+                .and(TaskSpecification.hasProjectId(projectId));
+        List<Task> tasks = taskRepository.findAll(specification);
         if (tasks.isEmpty()) {
-            return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "No se encontraron tareas");
+            return new CustomApiResponse<>(Collections.emptyList(), true, HttpStatus.OK, "No se encontraron tareas");
         }
         return new CustomApiResponse<>(tasks, false, HttpStatus.OK, "Tareas obtenidas exitosamente");
     }
@@ -39,6 +49,11 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
         Project existingProject = projectRepository.findById(taskDto.getProjectId()).orElse(null);
         if (existingProject == null) {
             return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "Proyecto no encontrado");
+        }
+
+        //validar que las fechas de la tarea esten dentro de las fechas del proyecto
+        if (taskDto.getStartDate().isBefore(existingProject.getStartDate()) || taskDto.getEndDate().isAfter(existingProject.getEndDate())) {
+            return new CustomApiResponse<>(null, true, HttpStatus.BAD_REQUEST, "Las fechas de la tarea deben estar dentro de las fechas del proyecto");
         }
 
         Task task = taskDto.toTask();
@@ -93,8 +108,8 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
         existingTask.setDescription(taskDto.getDescription());
         existingTask.setComment(taskDto.getComment());
         existingTask.setStatus(TaskStatus.valueOf(taskDto.getStatus()));
-        existingTask.setStartDate(taskDto.getStartDate().toString());
-        existingTask.setEndDate(taskDto.getEndDate().toString());
+        existingTask.setStartDate(taskDto.getStartDate());
+        existingTask.setEndDate(taskDto.getEndDate());
         existingTask.setProject(existingProject);
         taskRepository.save(existingTask);
         return new CustomApiResponse<>(existingTask, false, HttpStatus.OK, "Tarea actualizada exitosamente");
@@ -110,6 +125,5 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
         taskRepository.save(existingTask);
         return new CustomApiResponse<>(existingTask, false, HttpStatus.OK, "Estado de la tarea actualizado exitosamente");
     }
-
 
 }

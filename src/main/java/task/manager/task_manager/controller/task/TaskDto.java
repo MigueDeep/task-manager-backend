@@ -27,7 +27,6 @@ public class TaskDto {
     @Length(max = 250, message = "La descripción no debe exceder los 250 caracteres")
     private String description;
 
-    @NotBlank(message = "El comentario es requerido")
     @Length(max = 250, message = "El comentario no debe exceder los 250 caracteres")
     private String comment;
 
@@ -52,8 +51,8 @@ public class TaskDto {
         task.setDescription(this.description);
         task.setComment(this.comment);
         task.setStatus(TaskStatus.valueOf(this.status));
-        task.setStartDate(this.startDate.toString());
-        task.setEndDate(this.endDate.toString());
+        task.setStartDate(this.startDate);
+        task.setEndDate(this.endDate);
         return task;
     }
 

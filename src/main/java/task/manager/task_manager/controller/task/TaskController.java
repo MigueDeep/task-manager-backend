@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.task.TaskStatus;
 import task.manager.task_manager.service.task.TaskService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,10 +37,16 @@ public class TaskController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/getAll")
-    public ResponseEntity<CustomApiResponse<List<Task>>> getAllTasks() {
+    public ResponseEntity<CustomApiResponse<List<Task>>> getAllTasks(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) UUID projectId
+    ) {
         CustomApiResponse<List<Task>> response = new CustomApiResponse<>();
         try{
-            response = service.getAllTasks();
+            response = service.getAllTasks(name, status, startDate, endDate, projectId);
         }catch (Exception e){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage(e.getMessage());
@@ -123,10 +131,10 @@ public class TaskController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PutMapping("/update")
-    public ResponseEntity<CustomApiResponse<Task>> updateTask(@RequestParam UUID id, @RequestBody TaskDto taskDto) {
+    public ResponseEntity<CustomApiResponse<Task>> updateTask(@RequestBody TaskDto taskDto) {
         CustomApiResponse<Task> response = new CustomApiResponse<>();
         try{
-            response = service.updateTask(id, taskDto);
+            response = service.updateTask(taskDto.getId(), taskDto);
         }catch (Exception e){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage(e.getMessage());
