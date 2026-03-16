@@ -16,7 +16,7 @@ public class ProjectDto {
     private UUID id;
 
     @NotBlank(message = "El nombre es requerido")
-    @Length(max = 50, message = "El nombre no debe exceder los 150 caracteres")
+    @Length(max = 50, message = "El nombre no debe exceder los 50 caracteres")
     private String name;
 
     @NotBlank(message = "La descripción es requerida")

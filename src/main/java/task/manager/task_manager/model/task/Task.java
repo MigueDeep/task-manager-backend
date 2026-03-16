@@ -1,22 +1,21 @@
-package task.manager.task_manager.model.project;
+package task.manager.task_manager.model.task;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.*;
-import task.manager.task_manager.model.task.Task;
-import task.manager.task_manager.model.type.Type;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import task.manager.task_manager.model.project.Project;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "project")
-public class Project {
+@Table(name = "task")
+public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,8 +27,12 @@ public class Project {
     @Column(name = "description", length = 250, nullable = false)
     private String description;
 
-    @Column(name = "status" , length = 15, nullable = false)
-    private String status;
+    @Column(name = "comment", length = 250, nullable = false)
+    private String comment;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 15, nullable = false)
+    private TaskStatus status;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -38,10 +41,8 @@ public class Project {
     private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "id_type", referencedColumnName = "id")
-    private Type type;
+    @JoinColumn(name = "id_project", referencedColumnName = "id")
+    @JsonIgnoreProperties({"tasks", "type"})
+    private Project project;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"project"})
-    private List<Task> tasks;
 }
