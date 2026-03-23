@@ -26,13 +26,10 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         CustomApiResponse<Map<String, Object>> body = new CustomApiResponse<>(
-                Map.of(
-                        "path", request.getRequestURI(),
-                        "details", "Token ausente, invalido o expirado"
-                ),
+                null,
                 true,
                 HttpStatus.UNAUTHORIZED,
-                "No autenticado. Inicia sesion o envia un token valido."
+                "No se ha proporcionado un token de autenticación válido."
         );
 
         response.getWriter().write(objectMapper.writeValueAsString(body));

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import task.manager.task_manager.service.auth.AuthService;
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
+@SecurityRequirements()
 public class AuthController {
 
     private final AuthService authService;

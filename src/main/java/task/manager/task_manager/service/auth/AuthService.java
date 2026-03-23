@@ -2,7 +2,6 @@ package task.manager.task_manager.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import task.manager.task_manager.config.CustomApiResponse;
@@ -11,6 +10,7 @@ import task.manager.task_manager.config.CustomDtoValidator;
 import task.manager.task_manager.controller.user.SignInDto;
 import task.manager.task_manager.controller.user.SignedDto;
 import task.manager.task_manager.controller.user.UserDto;
+import task.manager.task_manager.controller.user.UserResponseDto;
 import task.manager.task_manager.model.user.User;
 import task.manager.task_manager.model.user.UserRepository;
 import task.manager.task_manager.security.jwt.JwtProvider;
@@ -59,7 +59,8 @@ public class AuthService extends CustomDtoValidator<UserDto> {
             }
 
             String token = provider.generateToken(userFound);
-            SignedDto signedDto = new SignedDto(token, userFound);
+            UserResponseDto userResponseDto = new UserResponseDto(userFound.getId(), userFound.getFullName(), userFound.getEmail());
+            SignedDto signedDto = new SignedDto(token, userResponseDto);
             return new CustomApiResponse<>(signedDto, false, HttpStatus.OK, "Inicio de sesión exitoso");
 
         }catch (Exception e){
