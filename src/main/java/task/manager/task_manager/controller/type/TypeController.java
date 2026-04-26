@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import task.manager.task_manager.config.CustomApiResponse;
 import task.manager.task_manager.model.type.Type;
+import task.manager.task_manager.model.user.User;
 import task.manager.task_manager.service.type.TypeService;
 
 import java.util.List;
@@ -33,8 +35,8 @@ public class TypeController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping("/register")
-    public ResponseEntity<CustomApiResponse<Type>> register(@RequestBody TypeDto typeDto){
-        CustomApiResponse<Type> response = typeService.createType(typeDto);
+    public ResponseEntity<CustomApiResponse<Type>> register(@RequestBody TypeDto typeDto, @AuthenticationPrincipal User user){
+        CustomApiResponse<Type> response = typeService.createType(typeDto, user);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
@@ -47,10 +49,10 @@ public class TypeController {
             @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/getAll")
-    public ResponseEntity<CustomApiResponse<List<Type>>> getAll(){
-        CustomApiResponse<List<Type>> response = new CustomApiResponse<>();
+    public ResponseEntity<CustomApiResponse<List<TypeResponseDto>>> getAll(@AuthenticationPrincipal User user){
+        CustomApiResponse<List<TypeResponseDto>> response = new CustomApiResponse<>();
         try{
-            response = typeService.getAllTypes();
+            response = typeService.getAllTypes(user);
         }catch (Exception e){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage(e.getMessage());

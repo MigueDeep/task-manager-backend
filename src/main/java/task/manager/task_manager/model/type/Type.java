@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import task.manager.task_manager.model.project.Project;
+import task.manager.task_manager.model.user.User;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,4 +33,8 @@ public class Type {
     @JsonIgnore
     private List<Project> projects;
 
+    @ManyToOne
+    @JoinColumn(name = "id_user", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private User user;
 }

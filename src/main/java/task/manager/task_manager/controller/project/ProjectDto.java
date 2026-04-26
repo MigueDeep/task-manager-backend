@@ -1,4 +1,5 @@
 package task.manager.task_manager.controller.project;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,6 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import task.manager.task_manager.model.project.Project;
 import task.manager.task_manager.model.type.Type;
+import task.manager.task_manager.model.user.User;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -38,7 +40,7 @@ public class ProjectDto {
     @NotNull(message = "El tipo es requerido")
     private UUID typeId;
 
-    public Project toProject(Type type) {
+    public Project toProject(Type type, User user) {
         Project project = new Project();
         project.setName(this.name);
         project.setDescription(this.description);
@@ -46,6 +48,7 @@ public class ProjectDto {
         project.setStartDate(this.startDate);
         project.setEndDate(this.endDate);
         project.setType(type);
+        project.setUser(user);
         return project;
     }
 

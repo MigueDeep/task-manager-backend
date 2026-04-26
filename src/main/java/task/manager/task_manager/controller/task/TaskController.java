@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import task.manager.task_manager.config.CustomApiResponse;
 import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.task.TaskStatus;
+import task.manager.task_manager.model.user.User;
 import task.manager.task_manager.service.task.TaskService;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 @RequestMapping("/api/v1/task")
@@ -46,7 +49,13 @@ public class TaskController {
     ) {
         CustomApiResponse<List<Task>> response = new CustomApiResponse<>();
         try{
-            response = service.getAllTasks(name, status, startDate, endDate, projectId);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = (authentication != null && authentication.getPrincipal() instanceof User) ? (User) authentication.getPrincipal() : null;
+            String userId = null;
+            if (user != null && user.getId() != null) {
+                userId = user.getId();
+            }
+            response = service.getAllTasks(name, status, startDate, endDate, projectId, userId);
         }catch (Exception e){
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
             response.setMessage(e.getMessage());

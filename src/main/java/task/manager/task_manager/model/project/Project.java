@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import task.manager.task_manager.model.task.Task;
 import task.manager.task_manager.model.type.Type;
+import task.manager.task_manager.model.user.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +41,11 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "id_type", referencedColumnName = "id")
     private Type type;
+
+    @ManyToOne
+    @JoinColumn(name = "id_user", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private User user;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"project"})

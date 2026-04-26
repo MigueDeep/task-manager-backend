@@ -1,7 +1,6 @@
 package task.manager.task_manager.service.task;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import task.manager.task_manager.config.CustomApiResponse;
@@ -26,16 +25,29 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
 
-    public CustomApiResponse<List<Task>> getAllTasks(String name, TaskStatus status, LocalDate startDate, LocalDate endDate, UUID projectId) {
-        Specification<Task> specification = Specification
-                .where(TaskSpecification.hasName(name))
-                .and(TaskSpecification.hasStatus(status))
-                .and(TaskSpecification.hasStartDate(startDate))
-                .and(TaskSpecification.hasEndDate(endDate))
-                .and(TaskSpecification.hasProjectId(projectId));
-        List<Task> tasks = taskRepository.findAll(specification);
+    public CustomApiResponse<List<Task>> getAllTasks(String name, TaskStatus status, LocalDate startDate, LocalDate endDate, UUID projectId, String userId) {
+        if (userId == null) {
+            return new CustomApiResponse<>(Collections.emptyList(), true, HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
+        }
+        List<Task> tasks = taskRepository.findAllByUserId(userId);
+        // Si se requieren filtros adicionales, aplicar aquí manualmente
+        if (name != null) {
+            tasks.removeIf(task -> !task.getName().equalsIgnoreCase(name));
+        }
+        if (status != null) {
+            tasks.removeIf(task -> !task.getStatus().equals(status));
+        }
+        if (startDate != null) {
+            tasks.removeIf(task -> !task.getStartDate().equals(startDate));
+        }
+        if (endDate != null) {
+            tasks.removeIf(task -> !task.getEndDate().equals(endDate));
+        }
+        if (projectId != null) {
+            tasks.removeIf(task -> !task.getProject().getId().equals(projectId));
+        }
         if (tasks.isEmpty()) {
-            return new CustomApiResponse<>(Collections.emptyList(), true, HttpStatus.OK, "No se encontraron tareas");
+            return new CustomApiResponse<>(Collections.emptyList(), false, HttpStatus.OK, "No se encontraron tareas");
         }
         return new CustomApiResponse<>(tasks, false, HttpStatus.OK, "Tareas obtenidas exitosamente");
     }
@@ -48,12 +60,12 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
 
         Project existingProject = projectRepository.findById(taskDto.getProjectId()).orElse(null);
         if (existingProject == null) {
-            return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "Proyecto no encontrado");
+            return new CustomApiResponse<>(null, true, HttpStatus.UNPROCESSABLE_ENTITY, "Proyecto no encontrado");
         }
 
         //validar que las fechas de la tarea esten dentro de las fechas del proyecto
         if (taskDto.getStartDate().isBefore(existingProject.getStartDate()) || taskDto.getEndDate().isAfter(existingProject.getEndDate())) {
-            return new CustomApiResponse<>(null, true, HttpStatus.BAD_REQUEST, "Las fechas de la tarea deben estar dentro de las fechas del proyecto");
+            return new CustomApiResponse<>(null, true, HttpStatus.UNPROCESSABLE_ENTITY, "Las fechas de la tarea deben estar dentro de las fechas del proyecto");
         }
 
         Task task = taskDto.toTask();
@@ -73,7 +85,7 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
     public CustomApiResponse<List<Task>> getTaskByProjectId(UUID id) {
         List<Task> tasks = taskRepository.findByProjectId(id);
         if (tasks.isEmpty()) {
-            return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "No se encontraron tareas para el proyecto dado");
+            return new CustomApiResponse<>(Collections.emptyList(), false, HttpStatus.OK, "No se encontraron tareas para el proyecto dado");
         }
         return new CustomApiResponse<>(tasks, false, HttpStatus.OK, "Tareas obtenidas exitosamente");
     }
@@ -100,7 +112,7 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
 
         Project existingProject = projectRepository.findById(taskDto.getProjectId()).orElse(null);
         if (existingProject == null) {
-            return new CustomApiResponse<>(null, true, HttpStatus.NOT_FOUND, "Proyecto no encontrado");
+            return new CustomApiResponse<>(null, true, HttpStatus.UNPROCESSABLE_ENTITY, "Proyecto no encontrado");
         }
 
         existingTask.setId(id);
