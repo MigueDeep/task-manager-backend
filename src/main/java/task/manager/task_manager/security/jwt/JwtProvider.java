@@ -29,7 +29,7 @@ public class JwtProvider {
     public String generateToken(User user, long expiration){
         return Jwts.builder()
                 .id(user.getId())
-                .claims(Map.of("name", user.getFullName(), "email", user.getEmail()))
+                .claims(Map.of("name", user.getFullName(), "email", user.getEmail(), "id", user.getId()))
                 .subject(user.getEmail())
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * expiration)))

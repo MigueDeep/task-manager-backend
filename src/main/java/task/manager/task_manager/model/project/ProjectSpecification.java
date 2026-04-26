@@ -27,4 +27,8 @@ public class ProjectSpecification {
                 endDate != null ? criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate) : null;
     }
 
+    public static Specification<Project> hasUserId(String userId) {
+        return (root, query, criteriaBuilder) ->
+                StringUtils.hasText(userId) ? criteriaBuilder.equal(root.get("user").get("id"), userId) : null;
+    }
 }
