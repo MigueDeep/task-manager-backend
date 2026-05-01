@@ -63,6 +63,11 @@ public class TaskService extends CustomDtoValidator<TaskDto> {
             return new CustomApiResponse<>(null, true, HttpStatus.UNPROCESSABLE_ENTITY, "Proyecto no encontrado");
         }
 
+        //validar que el proyecto no este finalizado
+        if (existingProject.getStatus().equals("finalizado")) {
+            return new CustomApiResponse<>(null, true, HttpStatus.UNPROCESSABLE_ENTITY, "No se pueden agregar tareas a un proyecto finalizado");
+        }
+
         //validar que las fechas de la tarea esten dentro de las fechas del proyecto
         if (taskDto.getStartDate().isBefore(existingProject.getStartDate()) || taskDto.getEndDate().isAfter(existingProject.getEndDate())) {
             return new CustomApiResponse<>(null, true, HttpStatus.UNPROCESSABLE_ENTITY, "Las fechas de la tarea deben estar dentro de las fechas del proyecto");
